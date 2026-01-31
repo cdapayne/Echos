@@ -182,14 +182,16 @@ async function loadUsers() {
 }
 
 // Select a user to chat with
-async function selectUser(user) {
+async function selectUser(user, event) {
     currentRecipient = user;
     
     // Highlight selected user
     document.querySelectorAll('.user-item').forEach(item => {
         item.classList.remove('active');
     });
-    event.target.classList.add('active');
+    if (event && event.target) {
+        event.target.classList.add('active');
+    }
     
     // Update chat header
     document.getElementById('chat-header').innerHTML = `<h3>Chat with ${user.username}</h3>`;

@@ -204,7 +204,11 @@ app.get('/api/messages/:userId1/:userId2', (req, res) => {
 });
 
 // Admin endpoint to get flagged conversations
+// Note: In production, implement proper admin authentication and authorization
 app.get('/api/admin/flagged', (req, res) => {
+  // TODO: Add authentication check for admin users
+  // Example: if (!req.user || !req.user.isAdmin) { return res.status(403).json({ error: 'Forbidden' }); }
+  
   try {
     const stmt = db.prepare(`
       SELECT fc.*, 

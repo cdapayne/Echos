@@ -5,10 +5,12 @@ Echos is a secure, end-to-end encrypted text-only messaging platform designed fo
 ## Features
 
 ### 🔒 Security & Encryption
-- **End-to-End Encryption**: All messages are encrypted on the client-side using RSA-OAEP (2048-bit) before transmission
+- **Message Encryption**: Messages are encrypted using RSA-OAEP (2048-bit) for storage and transmission
 - **Unique User Keys**: Each user has a unique public/private key pair for encryption/decryption
 - **Text-Only Messaging**: Strict validation to prevent photos, base64-encoded data, or binary content
-- **Secure Transit**: Messages remain encrypted during transmission via WebSocket connections
+- **Secure Transit**: Messages encrypted during transmission via WebSocket connections
+
+⚠️ **Important Security Note**: To enable content moderation, messages are sent in plaintext to the server for scanning before encryption. This means the server has access to message content during the moderation phase. This is not true end-to-end encryption in the cryptographic sense. See [SECURITY.md](SECURITY.md) for detailed information about this architecture trade-off.
 
 ### 🛡️ Content Moderation
 - **Automatic Detection**: Server-side detection of nefarious keywords in plaintext before encryption
@@ -133,12 +135,31 @@ When detected:
 - Text-only enforcement
 
 ### Privacy Trade-off
-⚠️ **Important**: To enable content moderation, plaintext messages are temporarily sent to the server for keyword scanning before encryption. This is necessary for the admin discovery feature but represents a privacy trade-off.
 
-For maximum privacy, the system could be modified to:
-- Remove server-side moderation
-- Implement client-side hashing of messages for pattern matching
-- Use homomorphic encryption (performance impact)
+⚠️ **Critical Security Architecture Information**
+
+This implementation makes an explicit trade-off between encryption and content moderation:
+
+**How it works:**
+1. Messages are sent in plaintext to the server for content scanning
+2. Server checks for nefarious keywords and patterns
+3. Messages are then encrypted for storage and transmission to recipients
+4. Only users with private keys can decrypt stored messages
+
+**What this means:**
+- ✗ This is NOT true end-to-end encryption
+- ✗ The server has access to message content during moderation
+- ✓ Messages are encrypted at rest in the database
+- ✓ Users' private keys never leave their devices
+
+**Why this trade-off exists:**
+The requirements specified both encryption AND content moderation with admin discovery. These requirements are fundamentally at odds with each other. True E2E encryption prevents server-side content analysis.
+
+**See [SECURITY.md](SECURITY.md) for:**
+- Detailed security analysis
+- Identified vulnerabilities and mitigations
+- Alternative architectures
+- Production deployment recommendations
 
 ## Production Considerations
 
