@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Echos - Encrypted Messaging</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="auth-container" class="container">
+        <h1>Echos</h1>
+        <p class="subtitle">Secure End-to-End Encrypted Messaging</p>
+        
+        <div id="login-form" class="form-container">
+            <h2>Login</h2>
+            <input type="text" id="login-username" placeholder="Username" />
+            <input type="password" id="login-password" placeholder="Password" />
+            <button onclick="login()">Login</button>
+            <p>Don't have an account? <a href="#" onclick="showRegister()">Register</a></p>
+        </div>
+        
+        <div id="register-form" class="form-container" style="display: none;">
+            <h2>Register</h2>
+            <input type="text" id="register-username" placeholder="Username" />
+            <input type="password" id="register-password" placeholder="Password" />
+            <input type="password" id="register-confirm-password" placeholder="Confirm Password" />
+            <button onclick="register()">Register</button>
+            <p>Already have an account? <a href="#" onclick="showLogin()">Login</a></p>
+        </div>
+        
+        <div id="error-message" class="error"></div>
+    </div>
+    
+    <div id="chat-container" class="container" style="display: none;">
+        <div class="header">
+            <h1>Echos</h1>
+            <div class="user-info">
+                <span id="current-username"></span>
+                <button onclick="logout()">Logout</button>
+                <button onclick="showAdmin()">Admin Panel</button>
+            </div>
+        </div>
+        
+        <div class="chat-layout">
+            <div class="users-sidebar">
+                <h3>Users</h3>
+                <div id="users-list"></div>
+            </div>
+            
+            <div class="chat-main">
+                <div id="chat-header">
+                    <h3>Select a user to start chatting</h3>
+                </div>
+                <div id="messages-container"></div>
+                <div id="input-container">
+                    <textarea id="message-input" placeholder="Type your message..." rows="3"></textarea>
+                    <button id="send-button" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="admin-container" class="container" style="display: none;">
+        <div class="header">
+            <h1>Admin Panel - Flagged Conversations</h1>
+            <button onclick="hideAdmin()">Back to Chat</button>
+        </div>
+        <div id="flagged-list"></div>
+    </div>
+    
+    <script src="crypto.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

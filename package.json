@@ -1,0 +1,28 @@
+{
+  "name": "echos",
+  "version": "1.0.0",
+  "description": "Encrypted text-only messaging platform",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "dev": "nodemon server/index.js"
+  },
+  "keywords": [
+    "messaging",
+    "encryption",
+    "e2e"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^9.2.2",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.5.1",
+    "uuid": "^9.0.1",
+    "ws": "^8.14.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
