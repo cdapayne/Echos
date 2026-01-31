@@ -6,6 +6,7 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
+const rateLimit = require('express-rate-limit');
 
 const app = express();
 const server = http.createServer(app);
@@ -50,6 +51,20 @@ db.exec(`
 app.use(express.json());
 app.use(express.static('public'));
 
+// Rate limiting for authentication endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.'
+});
+
+// Rate limiting for API endpoints
+const apiLimiter = rateLimit({
+  windowMs: 1 * 60 * 1000, // 1 minute
+  max: 60, // Limit each IP to 60 requests per windowMs
+  message: 'Too many requests from this IP, please try again later.'
+});
+
 // Store active WebSocket connections
 const connections = new Map();
 
@@ -93,7 +108,7 @@ function isTextOnly(content) {
 }
 
 // User registration endpoint
-app.post('/api/register', async (req, res) => {
+app.post('/api/register', authLimiter, async (req, res) => {
   try {
     const { username, password, publicKey } = req.body;
     
@@ -121,7 +136,7 @@ app.post('/api/register', async (req, res) => {
 });
 
 // User login endpoint
-app.post('/api/login', async (req, res) => {
+app.post('/api/login', authLimiter, async (req, res) => {
   try {
     const { username, password } = req.body;
     
@@ -155,7 +170,7 @@ app.post('/api/login', async (req, res) => {
 });
 
 // Get user's public key
-app.get('/api/users/:username/public-key', (req, res) => {
+app.get('/api/users/:username/public-key', apiLimiter, (req, res) => {
   try {
     const stmt = db.prepare('SELECT public_key FROM users WHERE username = ?');
     const user = stmt.get(req.params.username);
@@ -172,7 +187,7 @@ app.get('/api/users/:username/public-key', (req, res) => {
 });
 
 // Get list of users
-app.get('/api/users', (req, res) => {
+app.get('/api/users', apiLimiter, (req, res) => {
   try {
     const stmt = db.prepare('SELECT id, username FROM users ORDER BY username');
     const users = stmt.all();
@@ -184,7 +199,7 @@ app.get('/api/users', (req, res) => {
 });
 
 // Get conversation history
-app.get('/api/messages/:userId1/:userId2', (req, res) => {
+app.get('/api/messages/:userId1/:userId2', apiLimiter, (req, res) => {
   try {
     const { userId1, userId2 } = req.params;
     
@@ -205,7 +220,7 @@ app.get('/api/messages/:userId1/:userId2', (req, res) => {
 
 // Admin endpoint to get flagged conversations
 // Note: In production, implement proper admin authentication and authorization
-app.get('/api/admin/flagged', (req, res) => {
+app.get('/api/admin/flagged', apiLimiter, (req, res) => {
   // TODO: Add authentication check for admin users
   // Example: if (!req.user || !req.user.isAdmin) { return res.status(403).json({ error: 'Forbidden' }); }
   
