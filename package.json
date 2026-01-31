@@ -7,15 +7,19 @@
     "start": "node server/index.js",
     "dev": "nodemon server/index.js"
   },
-  "keywords": ["messaging", "encryption", "e2e"],
+  "keywords": [
+    "messaging",
+    "encryption",
+    "e2e"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.18.2",
-    "ws": "^8.14.2",
+    "bcrypt": "^6.0.0",
     "better-sqlite3": "^9.2.2",
-    "bcrypt": "^5.1.1",
-    "uuid": "^9.0.1"
+    "express": "^4.18.2",
+    "uuid": "^9.0.1",
+    "ws": "^8.14.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
